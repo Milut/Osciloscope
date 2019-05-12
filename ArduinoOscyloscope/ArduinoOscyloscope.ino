@@ -24,14 +24,23 @@ void setup()
   sbi(ADCSRA, ADPS2);
   cbi(ADCSRA, ADPS1);
   cbi(ADCSRA, ADPS0);
+  
   pinMode(Ch0, INPUT);
   pinMode(Ch1, INPUT);
   Serial.begin(230400);
 }
 
 int byteBuff = buffSize * 4;
+bool r = true;
 void loop()
 {
+  if(Serial.available()){
+    char code = Serial.read();
+    if(code == 'T'){
+      restartTrigger();
+    }
+  }
+  if(r){
   if(memPos > byteBuff){
     memPos = 0;
   }
@@ -60,6 +69,12 @@ void loop()
       trigPos = memPos;
     }
   }
+  }
+}
+
+void restartTrigger(){
+  countdown = buffSize - preTrigger;
+  r = true;
 }
 
 void triggerAction()
@@ -78,8 +93,8 @@ void triggerAction()
     timeStart = 0;
     delay(1500);
     trig = false;
-    countdown = buffSize - preTrigger;
-    memPos = 0;
+    countdown = -1;
+    r = false;
   }
 }
 

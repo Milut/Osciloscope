@@ -190,6 +190,10 @@ void keyPressed() {
     if (keyCode == UP) {
       offset += 50;
     }
+    if (keyCode == TAB) {
+      println("sending!");
+      serial.write(85);
+    }
   }
   if (offset < 0) {
     offset = 0;
