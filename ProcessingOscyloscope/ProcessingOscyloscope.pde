@@ -119,11 +119,12 @@ void drawGrid() {
   line(0-offset, getY(triggerLevel), preTrigger-offset, getY(triggerLevel));
   if (peak1 > 0) {
     line(peak1 - offset, 50, peak1 - offset, getY(400));
+    line(peak1 - offset, 50, peak2 - offset, 50);
     //println("p2: "+peak1);
   }
   if (peak2 > 0) {
     line(peak2 - offset, 50, peak2 - offset, getY(400));
-    //println("p2: "+peak2);
+    text(nf((float)freq,2,  1)+"Hz", (peak1+peak2)/2 - 20, 45);
   }
 }
 int mX1;
@@ -145,6 +146,7 @@ void mouseHeld() {
     mY2 = mouseY-mY1;
   }
 }
+double freq;
 void mouseReleased() {
   mouseFinished = true;
   holdCounter = 0;
@@ -152,7 +154,8 @@ void mouseReleased() {
   peak2 = getPeakPos(mX1+(mX2/2), mX1+mX2, c0Data);
   println("m1: "+mX1 + " p1: " + peak1);
   println("m2: "+mX2 + " p2: " + peak2);
-  println(nf((float)getFreq(peak1, peak2),2,  1)+"Hz");
+  freq = getFreq(peak1, peak2);
+  println(nf((float)freq,2,  1)+"Hz");
 }
 
 double getFreq(int x1, int x2) {
@@ -193,6 +196,13 @@ void keyPressed() {
     if (keyCode == TAB) {
       println("sending!");
       serial.write(85);
+    }
+  }else{
+    if(key == ' '){
+      println("sending!");
+      serial.write('T');
+      peak1 = 0;
+      peak2 = 0;
     }
   }
   if (offset < 0) {
